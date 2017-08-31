@@ -2,7 +2,7 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
-//#include "boost/bind.hpp"
+// Ajajaj...
 
 Reader::Reader()
 {
