@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <fstream>
 // Ajajaj...
-
+#include <data.h>
 Reader::Reader()
 {
 
