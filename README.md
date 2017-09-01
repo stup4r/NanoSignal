@@ -1,6 +1,5 @@
 # NanoSignal
 
-NanoSignal is a signal processing software solution, specialized in nanomotion detection output.
-Nanomotion detection is a biosensing technique used for different problems of medial importance.
+NanoSignal is a signal processing software.
 
-* Private Repository of Petar Stupar
+* Private Repository
