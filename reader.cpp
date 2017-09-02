@@ -2,6 +2,7 @@
 #include <iterator>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 
 Reader::Reader()
 {
@@ -26,9 +27,54 @@ void Reader::setDownSamplingStep(int dss){
 
 void Reader::doProcessOne(DataLink& datalink){
 
-    ifstream is((*datalink.name).c_str());
-    istream_iterator<dataType> start(is), end;
-    vector<dataType> tmp(start, end);
+    vector<dataType> tmp;
+
+    fstream isLine((*datalink.name).c_str());
+    string isFirstLine;
+    getline(isLine, isFirstLine);
+
+    if (isFirstLine[0] == '#'){
+        int clmn=0;
+        fstream is((*datalink.name).c_str());
+        string line;
+
+
+        while(!is.eof()){
+                getline(is, line);
+
+                if (line.length() == 0 || line[0] == '#'){
+                    if (line.find("Vertical Deflection") != std::string::npos){
+                        size_t defPosition = line.find("Vertical Deflection");
+                        size_t n = std::count(line.begin(), line.begin()+defPosition, '"');
+                        clmn = n/2;
+                    }
+                }
+                else{
+
+                    for (int i = 0; i<clmn;++i){
+
+                        size_t found = line.find(' ');
+                        if (found!=std::string::npos){
+                            line.erase(0,found+1);
+                        }
+                    }
+
+                istringstream ss(line);
+                double c;
+                ss >> c;
+                tmp.push_back(c);
+                }
+            }
+
+    }
+    else{
+
+        ifstream is((*datalink.name).c_str());
+        istream_iterator<dataType> start(is), end;
+        vector<dataType> extr(start, end);
+        tmp = extr;
+        extr.clear();
+    }
 
     if (this->isDownsampled == true) {
         vector<dataType> tmp2;
