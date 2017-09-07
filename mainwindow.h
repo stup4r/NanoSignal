@@ -83,7 +83,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Data data;
+    Data data; //stored data
     Notebook notebook;
 };
 
