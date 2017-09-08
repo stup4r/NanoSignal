@@ -24,11 +24,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QCPDocumentObject *plotObjectHandler = new QCPDocumentObject(this);
     ui->notebookTextEdit->document()->documentLayout()->registerHandler(QCPDocumentObject::PlotTextFormat, plotObjectHandler);
 
+    // LP
+   // plotter = NULL;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+ //   if(plotter != NULL) {
+  //      delete plotter;
+   //     plotter = NULL;
+    //}
 }
 
 void MainWindow::setState(){
@@ -245,8 +251,10 @@ void MainWindow::on_applyCutoffButton_clicked()
     var->cutoffVariancce(data.varData, (ui->editCutoffVar->text()).toDouble());
     delete var;
 
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->subsequentialPlot_Var(data);
+    //if(plotter == NULL) {
+        Plotter * plotter = new Plotter(ui->plot, this->dataModel);
+    //}
+    plotter->subsequentialPlot_Var();
     delete plotter;
 }
 
@@ -474,3 +482,4 @@ void MainWindow::on_actionManual_triggered()
     // Should be changed to open a file from resources.
     QDesktopServices::openUrl(QUrl("file:///home/kinase/Sources/Qt/NanoSignal_10_7/manualTest.pdf"));
 }
+
