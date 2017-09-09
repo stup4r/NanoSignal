@@ -4,15 +4,13 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    
-    DataModel dataModel;
-    // DataModel *dataModel = new...
+
+    System system; // Try pointer to compare
     
     MainWindow w;
-    w.setDataModel(&dataModel);
-    
+
+    w.setSystem(&system);
     w.show();
 
     return a.exec();
 }
-

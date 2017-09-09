@@ -24,50 +24,46 @@ MainWindow::MainWindow(QWidget *parent) :
     QCPDocumentObject *plotObjectHandler = new QCPDocumentObject(this);
     ui->notebookTextEdit->document()->documentLayout()->registerHandler(QCPDocumentObject::PlotTextFormat, plotObjectHandler);
 
-    // LP
-   // plotter = NULL;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
- //   if(plotter != NULL) {
-  //      delete plotter;
-   //     plotter = NULL;
-    //}
 }
 
 void MainWindow::setState(){
 
-    this->data.parameters["samplingFreq"] = (ui->editSamplingFreq->text()).toInt();
-
-    this->data.parameters["flatWindowed"] = ui->isWindowedCheck->isChecked();
-    this->data.parameters["flatOrder"] = (ui->flatOrderEdit->text()).toInt();
+    system->setParam("samplingFreq", (ui->editSamplingFreq->text()).toInt());
+    system->setParam("flatWindowed", ui->isWindowedCheck->isChecked());
+    system->setParam("flatOrder", (ui->flatOrderEdit->text()).toInt());
 
     if (ui->unitsFlatWin->currentText() == "Seconds"){
         int chosenWin = (ui->flatWinEdit->text()).toInt();
-        this->data.parameters["flatWin"] = data.parameters["samplingFreq"] * chosenWin;
+        int totalWin = system->getParam("samplingFreq") * chosenWin;
+        system->setParam("flatWin", totalWin);
     }
-    else this->data.parameters["flatWin"] = (ui->flatWinEdit->text()).toInt();
+    else system->setParam("flatWin", (ui->flatWinEdit->text()).toInt());
 
     if (ui->unitsFiltWin->currentText() == "Seconds"){
         int chosenWin = (ui->editMovAvgWin->text()).toInt();
-        this->data.parameters["filtWin"] = data.parameters["samplingFreq"] * chosenWin;
+        int totalWin = system->getParam("samplingFreq") * chosenWin;
+        system->setParam("filtWin", totalWin);
     }
-    else this->data.parameters["filtWin"] = (ui->editMovAvgWin->text()).toInt();
+    else system->setParam("filtWin", (ui->editMovAvgWin->text()).toInt());
 
     if (ui->unitsVarWin->currentText() == "Seconds"){
         int chosenWin = (ui->varWinEdit->text()).toInt();
-        this->data.parameters["varWin"] = data.parameters["samplingFreq"] * chosenWin;
+        int totalWin = system->getParam("samplingFreq") * chosenWin;
+        system->setParam("varWin", totalWin);
     }
-    else this->data.parameters["varWin"] = (ui->varWinEdit->text()).toInt();
+    else system->setParam("varWin", (ui->varWinEdit->text()).toInt());
 
     if (ui->unitsVarBar->currentText() == "Seconds"){
         int chosenWin = (ui->barSizeEdit->text()).toInt();
-        this->data.parameters["varBarSize"] = data.parameters["samplingFreq"] * chosenWin / data.parameters["varWin"];
+        int totalWin = system->getParam("samplingFreq") * chosenWin / system->getParam("varWin");
+        system->setParam("varBarSize", totalWin);
     }
-    else this->data.parameters["varBarSize"] = (ui->barSizeEdit->text()).toInt();
-
+    else system->setParam("varBarSize", (ui->barSizeEdit->text()).toInt());
 }
 
 void MainWindow::checkInputValues(vector<vector<dataType> >& someData, int& N){
@@ -86,7 +82,6 @@ void MainWindow::checkInputValues(vector<vector<dataType> >& someData, int& N){
         error->showMessage("Selected window size is greater than the minimum number of datapoints from an imported file! Minimum is used instead:\n" + QString::number(minimum) + " data points");
         N = minimum;
     }
-
 }
 
 void MainWindow::populateCombos(QStringList& fileNames){
@@ -112,42 +107,24 @@ void MainWindow::on_actionImport_triggered()
 
         //Clearing up the imported data first
         data.clearAll();
-        importing(fileNames);
+
+        system->doImport(fileNames);
+        system->setPlotWidget(ui->plot);
+
+        // Enable interface
+        ui->processBox->setEnabled(true);
+
+        // Feed the comboBox comboFileNames with list of File Names
+        populateCombos(fileNames);
+        setState();
+
+        // Set the message for the status bar
+        ui->statusBar->showMessage("Successfully imported files..." ,5000);
     }
 }
 
-void MainWindow::importing(QStringList fileNames){
-
-    // Convert QStringList into vector<string>
-    std::vector<string> fileNamesVec;
-    for (int i = 0; i < fileNames.size(); ++i) {
-        std::string tmp = fileNames[i].toStdString();
-        fileNamesVec.push_back(tmp);
-    }
-    this->data.fileNames = fileNamesVec;
-
-    // Allocate data files
-    for (unsigned int i = 0; i<data.fileNames.size(); ++i){
-        data.defData.push_back({0});
-        data.varData.push_back({0});
-    }
-
-    Reader * reader = new Reader;
-    reader->setIsDownsampled(data.parameters["isDownsampled"]);
-    reader->setDownSamplingStep(data.parameters["downSamplingFreq"]);
-    reader->doProcessMulti(this->data);
-    delete reader;
-    data.parameters["isDownsampled"] = 0;
-
-    // Enable interface
-    ui->processBox->setEnabled(true);
-
-    // Feed the comboBox comboFileNames with list of File Names
-    populateCombos(fileNames);
-    setState();
-    // Set the message for the status bar
-    ui->statusBar->showMessage("Successfully imported files..." ,5000);
-
+void MainWindow::setSystem(System *system){
+    this->system = system;
 }
 
 void MainWindow::on_fitPreviewButton_clicked()
@@ -179,36 +156,27 @@ void MainWindow::on_fitPreviewButton_clicked()
 void MainWindow::on_ApplyFlatButton_clicked()
 {
     setState();
-    checkInputValues(data.defData, data.parameters["flatWin"]);
+    //IMPLEMENT THIS CHECK!!!
+    //checkInputValues(data.defData, data.parameters["flatWin"]);
+    system->doFlat();
+//    Flattener * flat = new Flattener;
+//    flat->setIsWindowed(this->data.parameters["flatWindowed"]);
+//    flat->setOrder(this->data.parameters["flatOrder"]);
+//    flat->setWindow(this->data.parameters["flatWin"]);
 
-    Flattener * flat = new Flattener;
-    flat->setIsWindowed(this->data.parameters["flatWindowed"]);
-    flat->setOrder(this->data.parameters["flatOrder"]);
-    flat->setWindow(this->data.parameters["flatWin"]);
+//    flat->doProcessMulti(this->data);
 
-    flat->doProcessMulti(this->data);
-
-    delete flat;
+//    delete flat;
     ui->statusBar->showMessage("Flattening has been applied to the signal.",5000);
-    this->data.parameters["isFlattening"] = 1;
+    system->setParam("isFlattening", 1);
 }
 
 void MainWindow::on_ApplyVarButton_clicked()
 {
     setState();
-    checkInputValues(data.defData, data.parameters["varWin"]);
-
-    Variance * var = new Variance;
-    var->setWindow(this->data.parameters["varWin"]);
-
-    var->doProcessMulti(this->data);
-
-    delete var;
-
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->subsequentialPlot_Var(data);
-    delete plotter;
-
+    //checkInputValues(data.defData, data.parameters["varWin"]);
+    system->doVar();
+    system->doSubsequentialPlot(1);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -247,14 +215,14 @@ void MainWindow::on_clearNotebookButton_clicked()
 
 void MainWindow::on_applyCutoffButton_clicked()
 {
-    Variance * var = new Variance;
-    var->cutoffVariancce(data.varData, (ui->editCutoffVar->text()).toDouble());
-    delete var;
-
+//    Variance * var = new Variance;
+//    var->cutoffVariancce(data.varData, (ui->editCutoffVar->text()).toDouble());
+//    delete var;
+    system->doVarCut((ui->editCutoffVar->text()).toDouble());
     //if(plotter == NULL) {
-        Plotter * plotter = new Plotter(ui->plot, this->dataModel);
+        Plotter * plotter = new Plotter(ui->plot);
     //}
-    plotter->subsequentialPlot_Var();
+    //plotter->subsequentialPlot(dataModel->getData());
     delete plotter;
 }
 
@@ -262,22 +230,22 @@ void MainWindow::on_applyVarBarsButton_clicked()
 {
     setState();
 
-    Variance * var = new Variance;
-    var->averageBars(data);
-    delete var;
+//    Variance * var = new Variance;
+//    var->averageBars(data);
+//    delete var;
 
     Plotter * plotter = new Plotter(ui->plot);
-    plotter->varBarPlot(data);
+    //plotter->varBarPlot(dataModel->getData());
     delete plotter;
 }
 
 void MainWindow::on_boxPlotButton_clicked()
 {
     vector<vector<dataType> > statistic;
-
-    Variance * var = new Variance;
-    var->getBoxplotStat(data.varData, statistic);
-    delete var;
+    system->doVarBox(statistic);
+//    Variance * var = new Variance;
+//    var->getBoxplotStat(data.varData, statistic);
+//    delete var;
 
     Plotter * plotter = new Plotter(ui->plot);
     plotter->varBoxPlot(statistic, data.fileNames);
@@ -313,22 +281,22 @@ void MainWindow::on_calcSingleFFTButton_clicked()
 
     Plotter * plotter = new Plotter(ui->plot);
     plotter->setMinMaxRange(0, FS/2);
-    plotter->plotFFTPreview(freq, z);
+    //plotter->plotFFTPreview(freq, z);
     delete plotter;
 }
 
 void MainWindow::on_applyMovAvgButton_clicked()
 {
     setState();
-    checkInputValues(data.defData, data.parameters["filtWin"]);
-
-    Filter * filter = new Filter;
-    filter->setWindow(this->data.parameters["filtWin"]);
-    filter->doProcessMulti(this->data);
-    delete filter;
+    //checkInputValues(data.defData, data.parameters["filtWin"]);
+    system->doFilt();
+//    Filter * filter = new Filter;
+//    filter->setWindow(this->data.parameters["filtWin"]);
+//    filter->doProcessMulti(this->data);
+//    delete filter;
 
     ui->statusBar->showMessage("Filtering has been applied to the signal.",5000);
-    this->data.parameters["isFiltering"] = 1;
+    system->setParam("isFiltering", 1);
 }
 
 void MainWindow::on_plotButton_clicked()
@@ -339,10 +307,10 @@ void MainWindow::on_plotButton_clicked()
 
     if(ui->radioSignleFile->isChecked()){
         if (pageIndex == 0 or pageIndex == 1){
-            plotter->plotSingle(data.defData[fileIndex]);
+            //plotter->plotSingle(data.defData[fileIndex]);
         }
         else{
-            plotter->plotSingle(data.varData[fileIndex]);
+            //plotter->plotSingle(data.varData[fileIndex]);
         }
     }
 
@@ -378,41 +346,21 @@ void MainWindow::on_actionAppend_triggered()
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Files"),"/home/",tr("Text Files (*.txt)\n" "JPK out files (*.out)"));
 
-    // Convert QStringList into vector<string>
-    std::vector<string> fileNamesVec;
-    for (int i = 0; i < fileNames.size(); ++i) {
-        std::string tmp = fileNames[i].toStdString();
-        fileNamesVec.push_back(tmp);
-    }
-
-    Reader * reader = new Reader;
-    for (unsigned int i = 0; i < fileNamesVec.size(); ++i){
-        data.fileNames.push_back(fileNamesVec[i]);
-        data.defData.push_back({0});
-        data.varData.push_back({0});
-
-        int index = data.fileNames.size() - 1;
-
-        DataLink datalink;
-        datalink.name = &(data.fileNames[index]);
-        datalink.file = &(data.defData[index]);
-
-        reader->doProcessOne(datalink);
-    }
-
-    delete reader;
+    if(!fileNames.isEmpty()){
+        system->doAppend(fileNames);
 
     // Feed the comboBox comboFileNames with list of File Names
 
-    ui->fitPreviewCombo->addItems(fileNames);
-    ui->comboFFTfiles->addItems(fileNames);
-    ui->comboFiltPreviewFiles->addItems(fileNames);
-    ui->comboPlotSettingsFiles->addItems(fileNames);
+        ui->fitPreviewCombo->addItems(fileNames);
+        ui->comboFFTfiles->addItems(fileNames);
+        ui->comboFiltPreviewFiles->addItems(fileNames);
+        ui->comboPlotSettingsFiles->addItems(fileNames);
 
-    ui->processBox->setEnabled(true);
+        ui->processBox->setEnabled(true);
 
-    // Set the message for the status bar
-    ui->statusBar->showMessage("Successfully appended files..." , 5000);
+        // Set the message for the status bar
+        ui->statusBar->showMessage("Successfully appended files..." , 5000);
+    }
 
 }
 
@@ -435,14 +383,14 @@ void MainWindow::on_actionManipulation_triggered()
         // Populate combo boxes with new order of filenames
         QStringList newComboItems;
         for (unsigned int i = 0; i < data.fileNames.size(); ++i){
-            newComboItems.append(QString::fromStdString(data.fileNames[i]));
+            newComboItems.append(QString::fromStdString((system->getData()).fileNames[i]));
         }
         populateCombos(newComboItems);
 
-        data.parameters["samplingFreq"] = manipulation->getSampleFreq();
-        ui->editSamplingFreq->setValue(data.parameters["samplingFreq"]);
-        data.parameters["isDownsampled"] = manipulation->ifDownsampling();
-        data.parameters["downSamplingFreq"] = manipulation->getNewSampleFreq();
+        system->setParam("samplingFreq", manipulation->getSampleFreq());
+        ui->editSamplingFreq->setValue(system->getParam("samplingFreq"));
+        system->setParam("isDownsampled", manipulation->ifDownsampling());
+        system->setParam("downSamplingFreq", manipulation->getNewSampleFreq());
 
     }
 }

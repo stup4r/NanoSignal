@@ -1,14 +1,17 @@
 // LP
-
 #ifndef DATAMODEL_H
 #define DATAMODEL_H
+
+#include "data.h"
+#include "reader.h"
 
 class DataModel {
 public:
     DataModel(); // init and data
     ~DataModel();
     
-    void importing();
+    void importing(QStringList);
+    void appending(QStringList);
     
     Data& getData() {
         return data;

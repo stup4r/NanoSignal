@@ -4,15 +4,10 @@
 #include <QMainWindow>
 #include "types.h"
 #include "data.h"
-#include "reader.h"
-#include "flattener.h"
-#include "variance.h"
-#include "plotter.h"
 #include "notebook.h"
-#include "fourier.h"
-#include "filter.h"
 #include "customplotzoom.h"
 #include "manipulation.h"
+#include "system.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,15 +21,11 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void importing(QStringList);
     void setState();
     
-    //LP
-    void setDataModel(DataModel *dataModel) {
-        this->dataModel = dataModel;
-    }
+    void setSystem(System*);
     
-private: //LP
+private:
     void populateCombos(QStringList&);
     void checkInputValues(vector<vector<dataType> >&, int&);
 
@@ -90,11 +81,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-   // Data data;
-    DataModel *dataModel; // do not own the model
-    
-    //LP
-   // Plotter *plotter;
+    Data data;
+    System *system;
     Notebook notebook;
 };
 

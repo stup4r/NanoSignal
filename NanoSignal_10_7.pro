@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     fourier.cpp \
     filter.cpp \
     customplotzoom.cpp \
-    manipulation.cpp
+    manipulation.cpp \
+    datamodel.cpp \
+    system.cpp
 
 HEADERS  += mainwindow.h \
     polyfit.h \
@@ -55,7 +57,9 @@ HEADERS  += mainwindow.h \
     fft.h \
     filter.h \
     customplotzoom.h \
-    manipulation.h
+    manipulation.h \
+    dataModel.h \
+    system.h
 
 FORMS    += mainwindow.ui \
     manipulation.ui
