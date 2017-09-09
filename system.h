@@ -25,10 +25,11 @@ public:
     void doVarBars();
     void doVarBox(vector<vector<dataType> >&);
     void doSubsequentialPlot(int);
+    void doPreview(int, int);
 
+    void checkInputValue(vector<vector<dataType> >&, int&);
 
     Data& getData();
-
     void setParam(std::string, int);
     int getParam(std::string);
     void setPlotWidget(CustomPlotZoom*);

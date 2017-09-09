@@ -16,6 +16,21 @@ void System::setPlotWidget(CustomPlotZoom* plotWidget){
     this->plotWidget = plotWidget;
 }
 
+void System::checkInputValue(vector<vector<dataType> >& someData, int& N){
+    setParam("winValueChanged", 0);
+    int minimum = someData[0].size();
+    int vecSize;
+
+    for (unsigned int i = 0; i < someData.size(); ++i){
+        vecSize = someData[i].size();
+        minimum = (vecSize<minimum)?vecSize:minimum;
+    }
+    if (N > minimum){
+        N = minimum;
+        setParam("winValueChanged", 1);
+    }
+}
+
 void System::doImport(QStringList fileNames){
 
     // Convert QStringList into vector<string>
@@ -79,6 +94,7 @@ void System::doVar(){
 
     Variance * var = new Variance;
     var->setWindow(getParam("varWin"));
+    checkInputValue(this->data.defData, this->data.parameters["varWin"]);
     var->doProcessMulti(this->data);
     delete var;
 }
@@ -88,8 +104,10 @@ void System::doFlat(){
     flat->setIsWindowed(getParam("flatWindowed"));
     flat->setOrder(getParam("flatOrder"));
     flat->setWindow(getParam("flatWin"));
+    checkInputValue(this->data.defData, this->data.parameters["flatWin"]);
     flat->doProcessMulti(this->data);
     delete flat;
+    setParam("isFlattening", 1);
 }
 void System::doFilt(){
     Filter * filter = new Filter;
@@ -120,4 +138,68 @@ void System::doSubsequentialPlot(int s){
     Plotter * plotter = new Plotter(this->plotWidget);
     plotter->subsequentialPlot(this->data, s);
     delete plotter;
+}
+void System::doPreview(int index, int s){
+    DataLink datalink;
+    datalink.name = &(this->data.fileNames[index]);
+    vector<dataType> processedData = data.defData[index];
+    datalink.file = &processedData;
+
+    switch (s) {
+    case 0: // Flatten
+    {
+        Flattener * flat = new Flattener;
+        flat->setIsWindowed(getParam("flatWindowed"));
+        flat->setOrder(getParam("flatOrder"));
+        flat->setWindow(getParam("flatWin"));
+        checkInputValue(this->data.defData, this->data.parameters["flatWin"]);
+        flat->doProcessOne(datalink);
+        delete flat;
+
+        Plotter * plotter = new Plotter(this->plotWidget);
+        plotter->plotProcessPreview(this->data.defData[index], processedData);
+        delete plotter;
+
+        break;
+    }
+    case 1: // Filter
+    {
+        Filter * filter = new Filter;
+        filter->setWindow(getParam("filtWin"));
+        filter->doProcessOne(datalink);
+        delete filter;
+
+        Plotter * plotter = new Plotter(this->plotWidget);
+        plotter->plotProcessPreview(this->data.defData[index], processedData);
+        delete plotter;
+
+        break;
+    }
+    case 2: // FFT
+    {
+        dataType FS = getParam("samplingFreq");
+        Fourier * fourier = new Fourier;
+        fourier->setSamplingFreq(FS);
+        fourier->doProcessOne(datalink);
+        unsigned long N = fourier->getSizeN();
+        delete fourier;
+
+        vector<dataType> freq;
+        for (unsigned int i=0; i<N/2; i++) {
+            freq.push_back(i * FS / N);
+        }
+
+        freq.erase(freq.begin());
+        processedData.erase(processedData.begin());
+
+        Plotter * plotter = new Plotter(this->plotWidget);
+        plotter->setMinMaxRange(0, FS/2);
+        plotter->plot(freq, processedData, 2);
+        delete plotter;
+        break;
+    }
+    default:
+        break;
+    }
+    processedData.clear();
 }

@@ -66,21 +66,12 @@ void MainWindow::setState(){
     else system->setParam("varBarSize", (ui->barSizeEdit->text()).toInt());
 }
 
-void MainWindow::checkInputValues(vector<vector<dataType> >& someData, int& N){
+void MainWindow::checkInputValues(bool winValueChanged, int win){
 
-    int minimum = someData[0].size();
-    int vecSize;
-
-    for (unsigned int i = 0; i < someData.size(); ++i){
-        vecSize = someData[i].size();
-        minimum = (vecSize<minimum)?vecSize:minimum;
-    }
-
-    if (N > minimum){
+    if (winValueChanged == 1){
         QErrorMessage * error = new QErrorMessage(this);
         error->setWindowTitle("Input Error!");
-        error->showMessage("Selected window size is greater than the minimum number of datapoints from an imported file! Minimum is used instead:\n" + QString::number(minimum) + " data points");
-        N = minimum;
+        error->showMessage("Selected window size is greater than the minimum number of datapoints from an imported file! Minimum is used instead:\n" + QString::number(win) + " data points");
     }
 }
 
@@ -130,51 +121,23 @@ void MainWindow::setSystem(System *system){
 void MainWindow::on_fitPreviewButton_clicked()
 {
     setState();
-    checkInputValues(data.defData, data.parameters["flatWin"]);
-
-    Flattener * flat = new Flattener;
-    flat->setIsWindowed(this->data.parameters["flatWindowed"]);
-    flat->setOrder(this->data.parameters["flatOrder"]);
-    flat->setWindow(this->data.parameters["flatWin"]);
-
-    DataLink datalink;
     int index = ui->fitPreviewCombo->currentIndex();
-    datalink.name = &(data.fileNames[index]);
-    vector<dataType> fits = data.defData[index];
-    datalink.file = &fits;
-
-    flat->doProcessOne(datalink);
-    delete flat;
-
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->plotProcessPreview(data.defData[index], fits);
-    delete plotter;
-
-    ui->statusBar->showMessage("Flattening preview selected, using polynomial fit of order " + QString::number(data.parameters["flatOrder"]),5000);
+    system->doPreview(index, 0);
+    ui->statusBar->showMessage("Flattening preview selected, using polynomial fit of order " + QString::number(system->getParam("flatOrder")),5000);
 }
 
 void MainWindow::on_ApplyFlatButton_clicked()
 {
     setState();
-    //IMPLEMENT THIS CHECK!!!
-    //checkInputValues(data.defData, data.parameters["flatWin"]);
+    checkInputValues(system->getParam("winValueChanged"), system->getParam("flatWin"));
     system->doFlat();
-//    Flattener * flat = new Flattener;
-//    flat->setIsWindowed(this->data.parameters["flatWindowed"]);
-//    flat->setOrder(this->data.parameters["flatOrder"]);
-//    flat->setWindow(this->data.parameters["flatWin"]);
-
-//    flat->doProcessMulti(this->data);
-
-//    delete flat;
     ui->statusBar->showMessage("Flattening has been applied to the signal.",5000);
-    system->setParam("isFlattening", 1);
 }
 
 void MainWindow::on_ApplyVarButton_clicked()
 {
     setState();
-    //checkInputValues(data.defData, data.parameters["varWin"]);
+    checkInputValues(system->getParam("winValueChanged"), system->getParam("varWin"));
     system->doVar();
     system->doSubsequentialPlot(1);
 }
@@ -255,48 +218,16 @@ void MainWindow::on_boxPlotButton_clicked()
 void MainWindow::on_calcSingleFFTButton_clicked()
 {
     setState();
-
-    dataType FS = data.parameters["samplingFreq"];
-
-    DataLink datalink;
-    int index = ui->comboFFTfiles->currentIndex();
-    datalink.name = &(data.fileNames[index]);
-    vector<dataType> z = data.defData[index];
-    datalink.file = &z;
-
-    Fourier * fourier = new Fourier;
-    fourier->setSamplingFreq(FS);
-    fourier->doProcessOne(datalink);
-    unsigned long N = fourier->getSizeN();
-    delete fourier;
-
-
-    vector<dataType> freq;
-    for (unsigned int i=0; i<N/2; i++) {
-        freq.push_back(i * FS / N);
-    }
-
-    freq.erase(freq.begin());
-    z.erase(z.begin());
-
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->setMinMaxRange(0, FS/2);
-    //plotter->plotFFTPreview(freq, z);
-    delete plotter;
+    int index = ui->comboFiltPreviewFiles->currentIndex();
+    system->doPreview(index, 2);
 }
 
 void MainWindow::on_applyMovAvgButton_clicked()
 {
     setState();
-    //checkInputValues(data.defData, data.parameters["filtWin"]);
+    checkInputValues(system->getParam("winValueChanged"), system->getParam("filtWin"));
     system->doFilt();
-//    Filter * filter = new Filter;
-//    filter->setWindow(this->data.parameters["filtWin"]);
-//    filter->doProcessMulti(this->data);
-//    delete filter;
-
     ui->statusBar->showMessage("Filtering has been applied to the signal.",5000);
-    system->setParam("isFiltering", 1);
 }
 
 void MainWindow::on_plotButton_clicked()
@@ -320,24 +251,9 @@ void MainWindow::on_plotButton_clicked()
 void MainWindow::on_filterPreviewButton_clicked()
 {
     setState();
-    checkInputValues(data.defData, data.parameters["filtWin"]);
-
-    DataLink datalink;
     int index = ui->comboFiltPreviewFiles->currentIndex();
-    datalink.name = &(data.fileNames[index]);
-    vector<dataType> filt = data.defData[index];
-    datalink.file = &filt;
-
-    Filter * filter = new Filter;
-    filter->setWindow(this->data.parameters["filtWin"]);
-    filter->doProcessOne(datalink);
-    delete filter;
-
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->plotProcessPreview(data.defData[index], filt);
-    delete plotter;
-
-    ui->statusBar->showMessage("Filtering preview selected, using moving average of window: " + QString::number(data.parameters["filtWin"]),5000);
+    system->doPreview(index, 1);
+    ui->statusBar->showMessage("Filtering preview selected, using moving average of window: " + QString::number(system->getParam("filtWin")),5000);
 }
 
 void MainWindow::on_actionAppend_triggered()

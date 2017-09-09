@@ -43,6 +43,7 @@ public:
         {"filter", 2},
         {"filtWin", 400000},
         {"varWin", 200000},
+        {"winValueChanged", 0},
         {"varBarSize", 100}
     };
 
