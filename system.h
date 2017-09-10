@@ -23,13 +23,17 @@ public:
     void doVar();
     void doVarCut(double);
     void doVarBars();
-    void doVarBox(vector<vector<dataType> >&);
+    void doVarBox();
     void doSubsequentialPlot(int);
+    void doPlot(int, int);
     void doPreview(int, int);
+    void doBarPlot();
+    void doBoxPlot();
 
     void checkInputValue(vector<vector<dataType> >&, int&);
 
-    Data& getData();
+    void doReorder(vector<size_t>&);
+    vector<string> getFileNames();
     void setParam(std::string, int);
     int getParam(std::string);
     void setPlotWidget(CustomPlotZoom*);

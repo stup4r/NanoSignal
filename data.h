@@ -30,6 +30,7 @@ public:
     vector< vector<dataType> > defData;
     vector< vector<dataType> > varData;
     vector< vector<dataType> > varMeans;
+    vector< vector<dataType> > statistic;
 
     map<string, int> parameters = {
         {"samplingFreq",20000},

@@ -99,8 +99,11 @@ void Plotter::subsequentialPlot(Data& data, int s){
     plotWidget->xAxis->setTickLabels(true);
     switch (s) {
     case 0:
+    case 1:
         break;
-    case 1:{
+    case 2:
+        break;
+    case 3:{
         QPen pen;
         pen.setWidth(2);
         int step=2;
@@ -125,10 +128,8 @@ void Plotter::subsequentialPlot(Data& data, int s){
             plotWidget->graph()->rescaleAxes(true);
             plotWidget->graph()->setPen(pen);
         }
+        break;
     }
-        break;
-    case 2:
-        break;
     default:
         break;
     }
@@ -181,7 +182,7 @@ void Plotter::varBarPlot(Data& data){
     plotWidget->replot();
 }
 
-void Plotter::varBoxPlot(vector<vector<dataType> >& stat, vector<string>& fileNames){
+void Plotter::varBoxPlot(Data& data){
 
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
@@ -191,15 +192,15 @@ void Plotter::varBoxPlot(vector<vector<dataType> >& stat, vector<string>& fileNa
     boxBrush.setStyle(Qt::Dense6Pattern);
     statistical->setBrush(boxBrush);
 
-    for (unsigned int i = 0; i< stat.size()/2; ++i){
+    for (unsigned int i = 0; i< data.statistic.size()/2; ++i){
         double qKey = i;
-        QVector<double> Qoutlier = QVector<double>::fromStdVector(stat[2*i+1]);
-        statistical->addData(qKey, stat[2*i][0], stat[2*i][1], stat[2*i][2], stat[2*i][3], stat[2*i][4], Qoutlier);
+        QVector<double> Qoutlier = QVector<double>::fromStdVector(data.statistic[2*i+1]);
+        statistical->addData(qKey, data.statistic[2*i][0], data.statistic[2*i][1], data.statistic[2*i][2], data.statistic[2*i][3], data.statistic[2*i][4], Qoutlier);
     }
 
     QSharedPointer<QCPAxisTickerText> textTicker(new QCPAxisTickerText);
-    for (unsigned int i = 0; i < fileNames.size(); ++i){
-        textTicker->addTick(i, QString::fromStdString(finePrintName(fileNames[i])));
+    for (unsigned int i = 0; i < data.fileNames.size(); ++i){
+        textTicker->addTick(i, QString::fromStdString(finePrintName(data.fileNames[i])));
     }
     plotWidget->xAxis->setTickLabels(true);
     plotWidget->legend->setVisible(false);
@@ -211,37 +212,52 @@ void Plotter::varBoxPlot(vector<vector<dataType> >& stat, vector<string>& fileNa
     plotWidget->replot();
 }
 
-void Plotter::plot(vector<dataType>& v, int s){
+void Plotter::plot(Data& data, int fileIndex, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
     plotWidget->xAxis->setTickLabels(true);
 
-    QVector<double> x(v.size());
-    iota(x.begin(), x.end(), 0);
-
-    QVector<double> y = QVector<double>::fromStdVector(v);
-
     plotWidget->addGraph();
-    plotWidget->graph(0)->setData(x, y);
     plotWidget->graph(0)->setPen(QPen(Qt::blue));
     plotWidget->graph(0)->rescaleAxes(true);
+    plotWidget->graph(0)->setName(QString::fromStdString(finePrintName(data.fileNames[fileIndex])));
 
-    plotWidget->legend->setVisible(false);
+    int FS = data.parameters["samplingFreq"];
+
     switch (s) {
     case 0:
-        plotWidget->xAxis->setLabel("Time [Sample Points]");
+    case 1: // DEF
+    {
+        QVector<double> x(data.defData[fileIndex].size());
+        iota(x.begin(), x.end(), 0);
+        for_each(x.begin(), x.end(), [FS](dataType &i){i = i/(FS*60);});
+        QVector<double> y = QVector<double>::fromStdVector(data.defData[fileIndex]);
+        plotWidget->graph(0)->setData(x, y);
+        plotWidget->xAxis->setLabel("Time [minutes]");
         plotWidget->yAxis->setLabel("Deflection [a.u.]");
         break;
-    case 1:
-        plotWidget->xAxis->setLabel("Time [Sample Points]");
-        plotWidget->yAxis->setLabel("Variance [a.u.]");
+    }
+    case 2: // FFT
+    {
         break;
-    case 2:
+    }
+    case 3: // VAR
+    {
+        int varWin = data.parameters["varWin"];
+        QVector<double> x(data.varData[fileIndex].size());
+        iota(x.begin(), x.end(), 0);
+        for_each(x.begin(), x.end(), [varWin, FS](dataType &i){i = i*varWin/(FS*60);});
+        QVector<double> y = QVector<double>::fromStdVector(data.varData[fileIndex]);
+        plotWidget->graph(0)->setData(x, y);
+        plotWidget->xAxis->setLabel("Time [minutes]");
+        plotWidget->yAxis->setLabel("Deflection [a.u.]");
         break;
+    }
     default:
         break;
     }
 
+    plotWidget->legend->setVisible(true);
     plotWidget->rescaleAxes();
     plotWidget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
                           QCP::iSelectLegend | QCP::iSelectPlottables);

@@ -8,8 +8,11 @@ System::~System(){
 
 }
 
-Data& System::getData(){
-    return this->data;
+vector<string> System::getFileNames(){
+    return this->data.fileNames;
+}
+void System::doReorder(vector<size_t>& orders){
+    this->data.reorderData(orders);
 }
 
 void System::setPlotWidget(CustomPlotZoom* plotWidget){
@@ -32,7 +35,8 @@ void System::checkInputValue(vector<vector<dataType> >& someData, int& N){
 }
 
 void System::doImport(QStringList fileNames){
-
+    //Clearing up the imported data first
+    this->data.clearAll();
     // Convert QStringList into vector<string>
     std::vector<string> fileNamesVec;
     for (int i = 0; i < fileNames.size(); ++i) {
@@ -114,6 +118,7 @@ void System::doFilt(){
     filter->setWindow(getParam("filtWin"));
     filter->doProcessMulti(this->data);
     delete filter;
+    setParam("isFiltering", 1);
 }
 void System::doFFT(){
 
@@ -128,10 +133,10 @@ void System::doVarBars(){
     var->averageBars(this->data);
     delete var;
 }
-void System::doVarBox(vector<vector<dataType> >& statistic){
+void System::doVarBox(){
 
     Variance * var = new Variance;
-    var->getBoxplotStat(this->data.varData, statistic);
+    var->getBoxplotStat(this->data);
     delete var;
 }
 void System::doSubsequentialPlot(int s){
@@ -202,4 +207,19 @@ void System::doPreview(int index, int s){
         break;
     }
     processedData.clear();
+}
+void System::doBarPlot(){
+    Plotter * plotter = new Plotter(this->plotWidget);
+    plotter->varBarPlot(this->data);
+    delete plotter;
+}
+void System::doBoxPlot(){
+    Plotter * plotter = new Plotter(this->plotWidget);
+    plotter->varBoxPlot(this->data);
+    delete plotter;
+}
+void System::doPlot(int fileIndex, int pageIndex){
+    Plotter * plotter = new Plotter(this->plotWidget);
+    plotter->plot(this->data, fileIndex, pageIndex);
+
 }

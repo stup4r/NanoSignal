@@ -22,9 +22,8 @@ public:
     void subsequentialPlot(Data&, int);
     void varBarPlot(Data&);
     // LP O1 : declare the param you send in as const
-    // O2: Decoupling -> move data outside mainwindow
-    void varBoxPlot(vector<vector<dataType> >&, vector<string>&);
-    void plot(vector<dataType>&, int);
+    void varBoxPlot(Data&);
+    void plot(Data&, int, int);
 
 
 private:

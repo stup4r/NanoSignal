@@ -94,10 +94,7 @@ void MainWindow::on_actionImport_triggered()
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Files"),"/home/",tr("Text Files (*.txt)\n" "JPK out files (*.out)"));
 
     // If accepted
-    if(!fileNames.isEmpty()){
-
-        //Clearing up the imported data first
-        data.clearAll();
+    if(!fileNames.isEmpty()){        
 
         system->doImport(fileNames);
         system->setPlotWidget(ui->plot);
@@ -139,7 +136,7 @@ void MainWindow::on_ApplyVarButton_clicked()
     setState();
     checkInputValues(system->getParam("winValueChanged"), system->getParam("varWin"));
     system->doVar();
-    system->doSubsequentialPlot(1);
+    system->doSubsequentialPlot(3);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -178,41 +175,22 @@ void MainWindow::on_clearNotebookButton_clicked()
 
 void MainWindow::on_applyCutoffButton_clicked()
 {
-//    Variance * var = new Variance;
-//    var->cutoffVariancce(data.varData, (ui->editCutoffVar->text()).toDouble());
-//    delete var;
     system->doVarCut((ui->editCutoffVar->text()).toDouble());
-    //if(plotter == NULL) {
-        Plotter * plotter = new Plotter(ui->plot);
-    //}
-    //plotter->subsequentialPlot(dataModel->getData());
-    delete plotter;
+    system->doSubsequentialPlot(3);
 }
 
 void MainWindow::on_applyVarBarsButton_clicked()
 {
     setState();
 
-//    Variance * var = new Variance;
-//    var->averageBars(data);
-//    delete var;
-
-    Plotter * plotter = new Plotter(ui->plot);
-    //plotter->varBarPlot(dataModel->getData());
-    delete plotter;
+    system->doVarBars();
+    system->doBarPlot();
 }
 
 void MainWindow::on_boxPlotButton_clicked()
 {
-    vector<vector<dataType> > statistic;
-    system->doVarBox(statistic);
-//    Variance * var = new Variance;
-//    var->getBoxplotStat(data.varData, statistic);
-//    delete var;
-
-    Plotter * plotter = new Plotter(ui->plot);
-    plotter->varBoxPlot(statistic, data.fileNames);
-    delete plotter;
+    system->doVarBox();
+    system->doBoxPlot();
 }
 
 void MainWindow::on_calcSingleFFTButton_clicked()
@@ -232,20 +210,16 @@ void MainWindow::on_applyMovAvgButton_clicked()
 
 void MainWindow::on_plotButton_clicked()
 {
-    Plotter * plotter = new Plotter(ui->plot);
+    setState();
     int pageIndex = ui->processBox->currentIndex();
     int fileIndex = ui->comboPlotSettingsFiles->currentIndex();
 
     if(ui->radioSignleFile->isChecked()){
-        if (pageIndex == 0 or pageIndex == 1){
-            //plotter->plotSingle(data.defData[fileIndex]);
-        }
-        else{
-            //plotter->plotSingle(data.varData[fileIndex]);
-        }
+        system->doPlot(fileIndex, pageIndex);
     }
-
-    delete plotter;
+    else{
+        system->doSubsequentialPlot(pageIndex);
+    }
 }
 
 void MainWindow::on_filterPreviewButton_clicked()
@@ -272,34 +246,36 @@ void MainWindow::on_actionAppend_triggered()
         ui->comboFiltPreviewFiles->addItems(fileNames);
         ui->comboPlotSettingsFiles->addItems(fileNames);
 
-        ui->processBox->setEnabled(true);
-
         // Set the message for the status bar
         ui->statusBar->showMessage("Successfully appended files..." , 5000);
     }
-
+    ui->processBox->setEnabled(true);
 }
 
 void MainWindow::on_actionManipulation_triggered()
 {
     setState();
+    vector<string> fileNames = system->getFileNames();
+
     Manipulation * manipulation = new Manipulation;
-    manipulation->setVecList(data.fileNames);
-    manipulation->setSampleFreq(data.parameters["samplingFreq"]);
+    manipulation->setVecList(fileNames);
+    manipulation->setSampleFreq(system->getParam("samplingFreq"));
 
     manipulation->exec();
 
     bool isOrderChanged = manipulation->ifOrderChanged();
-
     if (isOrderChanged == true){
 
         vector<size_t> newIndices = manipulation->getVecOrder();
-        data.reorderData(newIndices);
+
+        system->doReorder(newIndices);
 
         // Populate combo boxes with new order of filenames
         QStringList newComboItems;
-        for (unsigned int i = 0; i < data.fileNames.size(); ++i){
-            newComboItems.append(QString::fromStdString((system->getData()).fileNames[i]));
+        vector<string> newFileNames = system->getFileNames();
+
+        for (unsigned int i = 0; i < newFileNames.size(); ++i){
+            newComboItems.append(QString::fromStdString(newFileNames[i]));
         }
         populateCombos(newComboItems);
 
