@@ -38,7 +38,6 @@ SOURCES += main.cpp\
     filter.cpp \
     customplotzoom.cpp \
     manipulation.cpp \
-    datamodel.cpp \
     system.cpp
 
 HEADERS  += mainwindow.h \
@@ -58,7 +57,6 @@ HEADERS  += mainwindow.h \
     filter.h \
     customplotzoom.h \
     manipulation.h \
-    dataModel.h \
     system.h
 
 FORMS    += mainwindow.ui \
