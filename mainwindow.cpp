@@ -421,9 +421,8 @@ void MainWindow::on_actionVariance_triggered()
 void MainWindow::on_actionAbout_triggered()
 {
     QString about_text;
-    about_text = "Author: Awesome Me\n";
-    about_text += "Something else\n";
-    about_text += "(C) NanoSignal (R)\n";
+    about_text = "NanoSignal: Signal analysis toolbox.\nAuthor: Petar Stupar\nCollective Copyright Holder\n";
+    about_text += "Copyright (C) 2017\nLicensed under the GPLv3.\n";
 
     QMessageBox::about(this, "About NanoSignal", about_text);
 }
@@ -435,6 +434,6 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionManual_triggered()
 {
     // Should be changed to open a file from resources.
-    QDesktopServices::openUrl(QUrl("file:///home/kinase/Sources/Qt/NanoSignal_10_7/manualTest.pdf"));
+    //QDesktopServices::openUrl(QUrl("file:///manualTest.pdf"));
 }
 
