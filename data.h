@@ -30,6 +30,7 @@ public:
     vector< vector<dataType> > defData;
     vector< vector<dataType> > varData;
     vector< vector<dataType> > varMeans;
+    vector< vector<dataType> > statistic;
 
     map<string, int> parameters = {
         {"samplingFreq",20000},
@@ -43,9 +44,11 @@ public:
         {"filter", 2},
         {"filtWin", 400000},
         {"varWin", 200000},
+        {"winValueChanged", 0},
         {"varBarSize", 100}
     };
 
 };
 
 #endif // DATA_H
+

@@ -53,6 +53,14 @@ std::vector<size_t> const Manipulation::getVecOrder(){
         newIndices.push_back(pos);
     }
 
+    // If the same file is appended, it will find the distance of the first encountered file.
+    // Therefore, a check to see if two elements are identical, the second one is raised up by 1
+    for (unsigned int i=0; i < newIndices.size(); ++i){
+        for (unsigned int j=i+1; j < newIndices.size(); ++j){
+            if(newIndices[i]==newIndices[j]) ++newIndices[j];
+        }
+    }
+
     return newIndices;
 }
 

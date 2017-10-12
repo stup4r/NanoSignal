@@ -2,7 +2,6 @@
 #define PLOTTER_H
 #include "qcustomplot.h"
 #include "data.h"
-#include "mainwindow.h"
 #include "customplotzoom.h"
 
 using std::vector;
@@ -11,23 +10,28 @@ class Plotter
 {
 
 public:
+    //LP
     Plotter(CustomPlotZoom*);
     ~Plotter();
 
     string finePrintName(string&);
     void setMinMaxRange(dataType, dataType);
+
     void plotProcessPreview(vector<dataType>&, vector<dataType>&);
-    void plotFFTPreview(vector<dataType>&, vector<dataType>&);
-    void subsequentialPlot_Var(Data&);
+    void plot(vector<dataType>&, vector<dataType>&, int);
+    void subsequentialPlot(Data&, int);
     void varBarPlot(Data&);
-    void varBoxPlot(vector<vector<dataType> >&, vector<string>&);
-    void plotSingle(vector<dataType>&);
+    // LP O1 : declare the param you send in as const
+    void varBoxPlot(Data&);
+    void plot(Data&, int, int);
 
 
 private:
-    CustomPlotZoom* plot = NULL;
+
+    CustomPlotZoom* plotWidget;
     dataType minRange = 0;
     dataType maxRange = 1;
 };
 
 #endif // PLOTTER_H
+

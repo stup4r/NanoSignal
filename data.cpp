@@ -13,6 +13,7 @@ void Data::clearAll(){
     this->varData.clear();
     this->fileNames.clear();
     this->varMeans.clear();
+    this->statistic.clear();
 }
 
 void Data::reorderData(vector<size_t>& order){
@@ -20,4 +21,5 @@ void Data::reorderData(vector<size_t>& order){
     reorderVec(this->varData, order);
     reorderVec(this->fileNames, order);
     this->varMeans.clear();
+    this->statistic.clear();
 }

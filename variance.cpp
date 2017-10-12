@@ -88,13 +88,13 @@ dataType Variance::getMedian(vector<dataType> v){
     return median;
 }
 
-void Variance::getBoxplotStat(vector<vector<dataType> >& varData, vector<vector<dataType> >& stat){
-    stat.clear();
-    for (unsigned int i = 0; i < varData.size(); ++i){
+void Variance::getBoxplotStat(Data& data){
+    data.statistic.clear();
+    for (unsigned int i = 0; i < data.varData.size(); ++i){
 
         dataType Q1, Q2, Q3, IQR, min, max;
         vector<dataType> firsthalf, secondhalf, v;
-        v = varData[i];
+        v = data.varData[i];
         size_t size = v.size();
 
         sort(v.begin(), v.end());
@@ -122,13 +122,13 @@ void Variance::getBoxplotStat(vector<vector<dataType> >& varData, vector<vector<
         min = Q1 - 1.5*IQR;
         max = Q3 + 1.5*IQR;
 
-        stat.push_back({min, Q1, Q2, Q3, max});
+        data.statistic.push_back({min, Q1, Q2, Q3, max});
 
         vector<dataType> outliers;
         for (unsigned int i=0; i < v.size(); ++i){
             if(v[i] < min or v[i] > max) {outliers.push_back(v[i]);}
         }
-        stat.push_back(outliers);
+        data.statistic.push_back(outliers);
 
     }
 }

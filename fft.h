@@ -6,6 +6,12 @@
 #include <vector>
 
 using namespace std;
+/**
+ *  \brief FFT calculation function
+ * Function FFT calculates Fourier Spectrum by taking only n = 2^m points.
+ * Adapted from the book
+ * @param dir
+ */
 
 template<typename T>
 void FFT(int dir, unsigned long m, vector<T>& x, vector<T>& y){
