@@ -37,6 +37,7 @@ public:
     void setParam(std::string, int);
     int getParam(std::string);
     void setPlotWidget(CustomPlotZoom*);
+    std::map<std::string, int> getAllParams();
 
 private:
     Data data;

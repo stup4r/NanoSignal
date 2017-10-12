@@ -18,6 +18,9 @@ void System::doReorder(vector<size_t>& orders){
 void System::setPlotWidget(CustomPlotZoom* plotWidget){
     this->plotWidget = plotWidget;
 }
+std::map<std::string, int> System::getAllParams(){
+    return this->data.parameters;
+}
 
 void System::checkInputValue(vector<vector<dataType> >& someData, int& N){
     setParam("winValueChanged", 0);

@@ -155,7 +155,8 @@ void MainWindow::on_extractPlotButton_clicked()
 void MainWindow::on_extractSettingsButton_clicked()
 {
     setState();
-    notebook.extractSettings(data.parameters);
+    std::map<std::string, int> params = system->getAllParams();
+    notebook.extractSettings(params);
 }
 
 void MainWindow::on_saveNotebookButton_clicked()

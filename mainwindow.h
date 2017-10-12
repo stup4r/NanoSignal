@@ -81,7 +81,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Data data;
     System *system;
     Notebook notebook;
 };
