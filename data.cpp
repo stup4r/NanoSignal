@@ -8,6 +8,10 @@ Data::~Data(){
 
 }
 
+/**
+ * @brief Data::clearAll Clears all the vectors from the Data container.
+ * Calls the clear() function of an STL vector to remove all the content from it.
+ */
 void Data::clearAll(){
     this->defData.clear();
     this->varData.clear();
@@ -16,6 +20,11 @@ void Data::clearAll(){
     this->statistic.clear();
 }
 
+/**
+ * @brief Data::reorderData Re-orders vectors within the data container.
+ * Calls reorderVec function to change the order of all vector members within the class by using a set of indices stored in vector "order".
+ * @param order Set of indices to re-arrange member vectors.
+ */
 void Data::reorderData(vector<size_t>& order){
     reorderVec(this->defData, order);
     reorderVec(this->varData, order);

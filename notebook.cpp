@@ -10,10 +10,14 @@ Notebook::~Notebook(){
 
 void Notebook::setTextEdit(QTextEdit* someTextEdit){
     this->notebookTextEdit = someTextEdit;
-    //QCPDocumentObject *plotObjectHandler = new QCPDocumentObject(mainWin);
-    //notebookTextEdit->document()->documentLayout()->registerHandler(QCPDocumentObject::PlotTextFormat, plotObjectHandler);
 }
 
+/**
+ * @brief Notebook::extractPlot Extracts the plot from the plotting widget into the notebook.
+ * @param plt Plotting widget pointer parsed from the main window
+ * @param w width of the extracted graph in the notebook - user defined
+ * @param h height of the extracted graph in the notebook - user defined
+ */
 void Notebook::extractPlot(QCustomPlot* plt, double w, double h){
     QTextCursor cursor = notebookTextEdit->textCursor();
     cursor.insertText(QString(QChar::ObjectReplacementCharacter), QCPDocumentObject::generatePlotFormat(plt, w, h));
@@ -21,6 +25,10 @@ void Notebook::extractPlot(QCustomPlot* plt, double w, double h){
     notebookTextEdit->setTextCursor(cursor);
 }
 
+/**
+ * @brief Notebook::extractSettings Extracts parameters used in the signal processing.
+ * @param params Parameters map that contains all the parameters and their values used.
+ */
 void Notebook::extractSettings(std::map<std::string, int>& params){
     QTextCursor cursor = notebookTextEdit->textCursor();
     QDateTime datetime = QDateTime::currentDateTime();
@@ -54,6 +62,10 @@ void Notebook::extractSettings(std::map<std::string, int>& params){
     cursor.insertText("\n-------------------------------\n\n");
 }
 
+/**
+ * @brief Notebook::saveNotebook Export of the notebook by printing it to the PDF file.
+ * @param fileName Selected filename for a notebook PDF file.
+ */
 void Notebook::saveNotebook(QString& fileName){
     if (!fileName.isEmpty())
     {

@@ -9,12 +9,15 @@
 #include "variance.h"
 #include "plotter.h"
 
+/**
+ * @brief The System class Data manager class used for do call most of the processing objects, plotters etc.
+ */
 class System
 {
 public:
     System();
     ~System();
-//test
+
     void doImport(QStringList);
     void doAppend(QStringList);
     void doFlat();
@@ -40,7 +43,7 @@ public:
     std::map<std::string, int> getAllParams();
 
 private:
-    Data data;
+    Data data; /**< Data container, large memory requirement */
     CustomPlotZoom* plotWidget = NULL;
 
 };

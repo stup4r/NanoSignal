@@ -10,6 +10,11 @@ Plotter::~Plotter(){
 
 }
 
+/**
+ * @brief Plotter::finePrintName Removes the path from the filename, for clarity.
+ * @param fileName Filename string
+ * @return The same filename string, but stipped off the path.
+ */
 string Plotter::finePrintName(string& fileName){
 
     size_t found = fileName.find_last_of("/\\");
@@ -23,6 +28,11 @@ void Plotter::setMinMaxRange(dataType min, dataType max){
     this->maxRange = max;
 }
 
+/**
+ * @brief Plotter::plotProcessPreview Plots the comparison between the raw file and a preview of the selected processing.
+ * @param v1 Raw file
+ * @param v2 Processing preview
+ */
 void Plotter::plotProcessPreview(vector<dataType>& v1, vector<dataType>& v2){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
@@ -56,6 +66,12 @@ void Plotter::plotProcessPreview(vector<dataType>& v1, vector<dataType>& v2){
     plotWidget->replot();
 }
 
+/**
+ * @brief Plotter::plot Plots the data, and sets the label depending on the int s.
+ * @param vecX X vector to plot.
+ * @param vecY Y vector to plot.
+ * @param s label case: 0 is the deflection, 2 is the FFT
+ */
 void Plotter::plot(vector<dataType>& vecX, vector<dataType>& vecY, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
@@ -93,6 +109,12 @@ void Plotter::plot(vector<dataType>& vecX, vector<dataType>& vecY, int s){
     plotWidget->replot();
 }
 
+/**
+ * @brief Plotter::subsequentialPlot Plots files one after the other in a single plot.
+ * @param data Data container to extract the right files, depending on the int s.
+ * @param s Swich statement modifier: 3 is the variance plot.
+ * Due to the fact that large files are imported, I will think about not implementing the subsequential plot of deflection data.
+ */
 void Plotter::subsequentialPlot(Data& data, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
@@ -142,6 +164,10 @@ void Plotter::subsequentialPlot(Data& data, int s){
     plotWidget->replot();
 }
 
+/**
+ * @brief Plotter::varBarPlot Plots variance averages as bars.
+ * @param data Data container to extract variance means.
+ */
 void Plotter::varBarPlot(Data& data){
     plotWidget->xAxis->setTickLabels(true);
     plotWidget->clearGraphs();
@@ -182,6 +208,10 @@ void Plotter::varBarPlot(Data& data){
     plotWidget->replot();
 }
 
+/**
+ * @brief Plotter::varBoxPlot Creates a box plot by using data from the data container.
+ * @param data Data container from which statistics are extracted (data.statistic).
+ */
 void Plotter::varBoxPlot(Data& data){
 
     plotWidget->clearGraphs();
@@ -212,6 +242,12 @@ void Plotter::varBoxPlot(Data& data){
     plotWidget->replot();
 }
 
+/**
+ * @brief Plotter::plot Regular plot of a single file, depening on the int s.
+ * @param data Data container from which files are extracted.
+ * @param fileIndex Index of the data vectors pointing to the chosen file (filename).
+ * @param s Switch case modifier: 0 and 1 - deflection data, 2 - FFT, 3 - variance.
+ */
 void Plotter::plot(Data& data, int fileIndex, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();

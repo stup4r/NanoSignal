@@ -9,10 +9,9 @@ Variance::~Variance(){
 }
 
 /**
- * Function that calculates variance of passed vector of data. Returns one value (of type double).
+ * Function that calculates variance of passed vector of data. Returns one value (of type dataType).
  * @param v - vector of doubles as data to be calculated variance of.
  */
-
 dataType Variance::oneVariance(vector<dataType>& v) {
     dataType v_sum = 0.0;
     int n = v.size();
@@ -29,6 +28,11 @@ dataType Variance::oneVariance(vector<dataType>& v) {
     return v_variance = var_sum/(n-1);
 }
 
+/**
+ * @brief Variance::doProcessOne Overridden function that does processing of a single file.
+ * This function will be called multiple times in different threads.
+ * @param datalink Helper struct that connects (references) to a single file and its file name.
+ */
 void Variance::doProcessOne(DataLink& datalink){
     vector<dataType> tmp;
     // In the following iteration, i is less and equal to the rounded-down int, to avoid loosing one window
@@ -40,6 +44,11 @@ void Variance::doProcessOne(DataLink& datalink){
     tmp.clear();
 }
 
+/**
+ * @brief Variance::cutoffVariancce Applies data cutting based on a threshold value.
+ * @param varData Variance data that the cutting is applied to.
+ * @param cutoff Threshold value
+ */
 void Variance::cutoffVariancce(vector<vector<dataType> >& varData, double cutoff){
     for (unsigned int i = 0; i < varData.size(); ++i){
         varData[i].erase(remove_if(varData[i].begin(), varData[i].end(), [cutoff](double n) {return n > cutoff;}), varData[i].end());
@@ -55,6 +64,10 @@ dataType Variance::getError(vector<dataType>& v){
     return stDev/sqrt(v.size());
 }
 
+/**
+ * @brief Variance::averageBars  Calculates variance averages.
+ * @param data Data container.
+ */
 void Variance::averageBars(Data& data){
     data.varMeans.clear();
     vector<dataType> means;
@@ -88,6 +101,10 @@ dataType Variance::getMedian(vector<dataType> v){
     return median;
 }
 
+/**
+ * @brief Variance::getBoxplotStat Calculates variance statistics for a box plot.
+ * @param data Data container.
+ */
 void Variance::getBoxplotStat(Data& data){
     data.statistic.clear();
     for (unsigned int i = 0; i < data.varData.size(); ++i){

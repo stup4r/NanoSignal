@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->plotstngsButton->setAutoDefault(false);
     ui->plotstngsButton->setCheckable(true);
 
-    // Set up Notebook object
+    // Set up the Notebook object
     notebook.setTextEdit(ui->notebookTextEdit);
     QCPDocumentObject *plotObjectHandler = new QCPDocumentObject(this);
     ui->notebookTextEdit->document()->documentLayout()->registerHandler(QCPDocumentObject::PlotTextFormat, plotObjectHandler);
@@ -31,6 +31,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/**
+ * @brief setState Records input values from text (spin) boxes.
+ * Takes all the user-defined values from the application window and stores them via the System class members.
+ */
 void MainWindow::setState(){
 
     system->setParam("samplingFreq", (ui->editSamplingFreq->text()).toInt());
@@ -66,6 +70,10 @@ void MainWindow::setState(){
     else system->setParam("varBarSize", (ui->barSizeEdit->text()).toInt());
 }
 
+/**
+ * @brief checkInputValues Checks the validity of input values for window parameters.
+ * Throws an error message if the window value has been set to lower than the number of data points.
+ */
 void MainWindow::checkInputValues(bool winValueChanged, int win){
 
     if (winValueChanged == 1){
@@ -75,6 +83,10 @@ void MainWindow::checkInputValues(bool winValueChanged, int win){
     }
 }
 
+/**
+ * @brief populateCombos Populates combo boxes with file names
+ * Takes imported file names and inserts them into all combo boxes in the application window
+ */
 void MainWindow::populateCombos(QStringList& fileNames){
     ui->fitPreviewCombo->clear();
     ui->fitPreviewCombo->addItems(fileNames);
@@ -89,6 +101,10 @@ void MainWindow::populateCombos(QStringList& fileNames){
     ui->comboPlotSettingsFiles->addItems(fileNames);
 }
 
+/**
+ * @brief MainWindow::on_actionImport_triggered Imports selected files.
+ * Opens up the file dialog and allows multiple files to be imported via Reader object.
+ */
 void MainWindow::on_actionImport_triggered()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Files"),"/home/",tr("Text Files (*.txt)\n" "JPK out files (*.out)"));
@@ -104,6 +120,8 @@ void MainWindow::on_actionImport_triggered()
 
         // Feed the comboBox comboFileNames with list of File Names
         populateCombos(fileNames);
+
+        // Set the parameters from the input values
         setState();
 
         // Set the message for the status bar
@@ -115,6 +133,10 @@ void MainWindow::setSystem(System *system){
     this->system = system;
 }
 
+/**
+ * @brief MainWindow::on_fitPreviewButton_clicked Previews the fit on the selected file.
+ * Before applying the fit to all files and overwriting them with processed ones, a user can preview if the fit is optimal.
+ */
 void MainWindow::on_fitPreviewButton_clicked()
 {
     setState();
@@ -123,6 +145,11 @@ void MainWindow::on_fitPreviewButton_clicked()
     ui->statusBar->showMessage("Flattening preview selected, using polynomial fit of order " + QString::number(system->getParam("flatOrder")),5000);
 }
 
+/**
+ * @brief MainWindow::on_ApplyFlatButton_clicked Applies flattening to all files.
+ * Calls the system object's member doFlat, to further call Flattener and create a QtConcurrent pool of processes for flattening.
+ * @see System::doFlat
+ */
 void MainWindow::on_ApplyFlatButton_clicked()
 {
     setState();
@@ -131,6 +158,11 @@ void MainWindow::on_ApplyFlatButton_clicked()
     ui->statusBar->showMessage("Flattening has been applied to the signal.",5000);
 }
 
+/**
+ * @brief MainWindow::on_ApplyFlatButton_clicked Applies variance calculations to all files.
+ * Calls the system object's member doVar, to further call the Variance instance and create a QtConcurrent pool of processes for calculations.
+ * @see System::doFlat
+ */
 void MainWindow::on_ApplyVarButton_clicked()
 {
     setState();
@@ -139,11 +171,20 @@ void MainWindow::on_ApplyVarButton_clicked()
     system->doSubsequentialPlot(3);
 }
 
+/**
+ * @brief MainWindow::on_actionExit_triggered Terminates the program.
+ * Trigger to exit the program and quit the QCoreApplication
+ */
 void MainWindow::on_actionExit_triggered()
 {
     QCoreApplication::quit();
 }
 
+/**
+ * @brief MainWindow::on_extractPlotButton_clicked Extracts the plot from the plotting widget into the notebook.
+ * Calls the Notebook's member function extractPlot, which takes widget pointer and dimensions of a desired extract.
+ * @see Notebook::extractPlot
+ */
 void MainWindow::on_extractPlotButton_clicked()
 {
     double width =  ui->spinBoxWidth->value();
@@ -152,6 +193,10 @@ void MainWindow::on_extractPlotButton_clicked()
     notebook.extractPlot(ui->plot, width, height);
 }
 
+/**
+ * @brief MainWindow::on_extractSettingsButton_clicked Extracts currently used settings and pastes them into the notebook.
+ * Calls the Notebook's memeber function extractSettings, which takes parameters as an input, to print them in the notebook.
+ */
 void MainWindow::on_extractSettingsButton_clicked()
 {
     setState();
@@ -159,12 +204,22 @@ void MainWindow::on_extractSettingsButton_clicked()
     notebook.extractSettings(params);
 }
 
+/**
+ * @brief MainWindow::on_saveNotebookButton_clicked Saves the notebook as a PDF file on the file system.
+ * Opens up a dialog to select a path where to store the printed PDF of a notebook, by Notebook's saveNotebook function.
+ * @see Notebook::saveNotebook
+ */
 void MainWindow::on_saveNotebookButton_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save document...", qApp->applicationDirPath(), "*.pdf");
     notebook.saveNotebook(fileName);
 }
 
+/**
+ * @brief MainWindow::on_clearNotebookButton_clicked Clears all the notes form the notebook.
+ * After an affirmative response, removes all the items from the notebook, by using Notebook's function clearNotes().
+ * @see Notebook::clearNotes
+ */
 void MainWindow::on_clearNotebookButton_clicked()
 {
     QMessageBox::StandardButton reply;
@@ -174,12 +229,24 @@ void MainWindow::on_clearNotebookButton_clicked()
     }
 }
 
+/**
+ * @brief MainWindow::on_applyCutoffButton_clicked Applies data cutting based on a threshold value.
+ * Calls up the system's members doVarCut for data cutting and doSubsequentialPlot for plotting the variance data one file after the other.
+ * @see System::doVarCut
+ * @see System::doSubsequentialPlot
+ */
 void MainWindow::on_applyCutoffButton_clicked()
 {
     system->doVarCut((ui->editCutoffVar->text()).toDouble());
     system->doSubsequentialPlot(3);
 }
 
+/**
+ * @brief MainWindow::on_applyVarBarsButton_clicked Calculates variance averages and plots bar chart.
+ * Calls up the system's functions doVarBars for calculating the average of variance for a selected range, and doBarPlot for plotting the values in a bar plot.
+ * @see System::doVarBars
+ * @see System::doBarPlot
+ */
 void MainWindow::on_applyVarBarsButton_clicked()
 {
     setState();
@@ -188,12 +255,23 @@ void MainWindow::on_applyVarBarsButton_clicked()
     system->doBarPlot();
 }
 
+/**
+ * @brief MainWindow::on_boxPlotButton_clicked Calculates variance statistics and plots them in a box plot.
+ * Calls up the system's functions doVarBox for calculating quartiles, IQR, median, and doBoxPlot for plotting the values in a box plot.
+ * @see System::doVarBox
+ * @see System::doBoxPlot
+ */
 void MainWindow::on_boxPlotButton_clicked()
 {
     system->doVarBox();
     system->doBoxPlot();
 }
 
+/**
+ * @brief MainWindow::on_calcSingleFFTButton_clicked Calculates a FFT spectrum of a single file under selection.
+ * After saving all the input values of the application window, it calls the System's doPreview function for FFT creation and plotting.
+ * @see System::doPreview
+ */
 void MainWindow::on_calcSingleFFTButton_clicked()
 {
     setState();
@@ -201,6 +279,11 @@ void MainWindow::on_calcSingleFFTButton_clicked()
     system->doPreview(index, 2);
 }
 
+/**
+ * @brief MainWindow::on_applyMovAvgButton_clicked Calculates the moving average on all files.
+ * After the input value saving and verification, it calls System's doFilt function to apply moving average on all files in separate threads.
+ * @see System::doFilt
+ */
 void MainWindow::on_applyMovAvgButton_clicked()
 {
     setState();
@@ -209,6 +292,12 @@ void MainWindow::on_applyMovAvgButton_clicked()
     ui->statusBar->showMessage("Filtering has been applied to the signal.",5000);
 }
 
+/**
+ * @brief MainWindow::on_plotButton_clicked Plots the selected option.
+ * Takes the index of the selected file and plots it. Depending on the choice of the plot, it may be a single plot or all files one after the other.
+ * @see System::doPlot
+ * @see System::doSubsequentialPlot
+ */
 void MainWindow::on_plotButton_clicked()
 {
     setState();
@@ -223,6 +312,11 @@ void MainWindow::on_plotButton_clicked()
     }
 }
 
+/**
+ * @brief MainWindow::on_filterPreviewButton_clicked Previews a moving average filtering.
+ * Without affectin all the files, it previews the filter by calling System's doPreview function.
+ * @see System::doPreview
+ */
 void MainWindow::on_filterPreviewButton_clicked()
 {
     setState();
@@ -231,6 +325,11 @@ void MainWindow::on_filterPreviewButton_clicked()
     ui->statusBar->showMessage("Filtering preview selected, using moving average of window: " + QString::number(system->getParam("filtWin")),5000);
 }
 
+/**
+ * @brief MainWindow::on_actionAppend_triggered Appends the selected file(s) onto already imported list.
+ * Without changing or overwriting already imported files, function appends selected files by doAppend and their filenames in all combo boxes.
+ * @see System::doAppend
+ */
 void MainWindow::on_actionAppend_triggered()
 {
     ui->processBox->setEnabled(false);
@@ -240,8 +339,7 @@ void MainWindow::on_actionAppend_triggered()
     if(!fileNames.isEmpty()){
         system->doAppend(fileNames);
 
-    // Feed the comboBox comboFileNames with list of File Names
-
+        // Feed the comboBox comboFileNames with list of File Names
         ui->fitPreviewCombo->addItems(fileNames);
         ui->comboFFTfiles->addItems(fileNames);
         ui->comboFiltPreviewFiles->addItems(fileNames);
@@ -253,9 +351,15 @@ void MainWindow::on_actionAppend_triggered()
     ui->processBox->setEnabled(true);
 }
 
+/**
+ * @brief MainWindow::on_actionManipulation_triggered Opens up a manipulation window.
+ * It takes filenames and feeds them to the Manipulation window combo box. Calls the window and then checks if changes in the file order has taken place.
+ */
 void MainWindow::on_actionManipulation_triggered()
 {
     setState();
+
+    // Take filenames from the appropriate container
     vector<string> fileNames = system->getFileNames();
 
     Manipulation * manipulation = new Manipulation;
@@ -264,6 +368,7 @@ void MainWindow::on_actionManipulation_triggered()
 
     manipulation->exec();
 
+    // If the order of files has been changed
     bool isOrderChanged = manipulation->ifOrderChanged();
     if (isOrderChanged == true){
 
@@ -280,6 +385,7 @@ void MainWindow::on_actionManipulation_triggered()
         }
         populateCombos(newComboItems);
 
+        // Set the sampling frequency and downsampling options after accepting the window
         system->setParam("samplingFreq", manipulation->getSampleFreq());
         ui->editSamplingFreq->setValue(system->getParam("samplingFreq"));
         system->setParam("isDownsampled", manipulation->ifDownsampling());
@@ -290,24 +396,28 @@ void MainWindow::on_actionManipulation_triggered()
 
 void MainWindow::on_actionFlattening_triggered()
 {
-    ui->processBox->setCurrentIndex(0);
+    ui->processBox->setCurrentIndex(0); // Changes focus of the process box to Flattening section
 }
 
 void MainWindow::on_actionFiltering_triggered()
 {
-    ui->processBox->setCurrentIndex(1);
+    ui->processBox->setCurrentIndex(1); // Changes focus of the process box to Filtering section
 }
 
 void MainWindow::on_actionFFT_triggered()
 {
-    ui->processBox->setCurrentIndex(2);
+    ui->processBox->setCurrentIndex(2); // Changes focus of the process box to FFT section
 }
 
 void MainWindow::on_actionVariance_triggered()
 {
-    ui->processBox->setCurrentIndex(3);
+    ui->processBox->setCurrentIndex(3); // Changes focus of the process box to Variance section
 }
 
+/**
+ * @brief MainWindow::on_actionAbout_triggered Opens up the About information.
+ * Shows the author information stored in a QString.
+ */
 void MainWindow::on_actionAbout_triggered()
 {
     QString about_text;
@@ -318,6 +428,10 @@ void MainWindow::on_actionAbout_triggered()
     QMessageBox::about(this, "About NanoSignal", about_text);
 }
 
+/**
+ * @brief MainWindow::on_actionManual_triggered Opens up the manual of how to use the software.
+ * Gives the manual of software usage.
+ */
 void MainWindow::on_actionManual_triggered()
 {
     // Should be changed to open a file from resources.

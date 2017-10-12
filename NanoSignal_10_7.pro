@@ -41,7 +41,6 @@ SOURCES += main.cpp\
     system.cpp
 
 HEADERS  += mainwindow.h \
-    polyfit.h \
     qcustomplot.h \
     types.h \
     data.h \
@@ -57,7 +56,8 @@ HEADERS  += mainwindow.h \
     filter.h \
     customplotzoom.h \
     manipulation.h \
-    system.h
+    system.h \
+    polynomialFit.h
 
 FORMS    += mainwindow.ui \
     manipulation.ui

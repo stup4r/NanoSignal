@@ -15,6 +15,11 @@ unsigned long Fourier::getSizeN(){
     return this->sizeN;
 }
 
+/**
+ * @brief Fourier::doProcessOne FFT calculation of the signal.
+ * FFt calculation is done using the FFT function from fft.h and placing the spectra in another vector within the datalink.
+ * @param datalink Helper struct that connects (references) to a single file, its file name and the Fourier transform.
+ */
 void Fourier::doProcessOne(DataLink& datalink){
 
     // Pay attention! If multithreaded, its gonna override files with FFTs!

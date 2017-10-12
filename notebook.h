@@ -7,6 +7,11 @@
 #include <map>
 #include <string>
 
+/**
+ * @brief The Notebook class Notebook window class.
+ * The Notebook is used to write notes and extract graphs and settings.
+ * Class method names are self-explanatory.
+ */
 class Notebook
 {
 public:

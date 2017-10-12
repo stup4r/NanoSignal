@@ -17,6 +17,11 @@ void CustomPlotZoom::setZoomMode(bool mode)
     mZoomMode = mode;
 }
 
+/**
+ * @brief CustomPlotZoom::mousePressEvent Creates a rectangule as a visual guide for zoom area selection.
+ * It takes the position of a mouse click and sets a corresponding rectangule starting position.
+ * @param event Mouse click
+ */
 void CustomPlotZoom::mousePressEvent(QMouseEvent * event)
 {
     if (mZoomMode)
@@ -31,6 +36,11 @@ void CustomPlotZoom::mousePressEvent(QMouseEvent * event)
     QCustomPlot::mousePressEvent(event);
 }
 
+/**
+ * @brief CustomPlotZoom::mouseMoveEvent Moves the rectangule as a visual guide for zoom area selection.
+ * It takes the position of a mouse click and sets a corresponding rectangule on-the-fly size.
+ * @param event Mouse moving event
+ */
 void CustomPlotZoom::mouseMoveEvent(QMouseEvent * event)
 {
     if (mRubberBand->isVisible())
@@ -40,6 +50,12 @@ void CustomPlotZoom::mouseMoveEvent(QMouseEvent * event)
     QCustomPlot::mouseMoveEvent(event);
 }
 
+/**
+ * @brief CustomPlotZoom::mouseReleaseEvent Hides the rectangule and takes its coordinates for zoom.
+ * Takes coordinates from a chosen rectangule and uses them to set a new range in the plotting widget
+ * @param event Mouse release
+ * @see QCustomPlot::setRange
+ */
 void CustomPlotZoom::mouseReleaseEvent(QMouseEvent * event)
 {
     if (mRubberBand->isVisible())

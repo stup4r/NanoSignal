@@ -6,11 +6,16 @@
 
 using std::vector;
 
+/**
+ * @brief The Plotter class Plotting class that takes care of all the plot generation and parsing to the plotting widget.
+ */
 class Plotter
 {
 
 public:
-    //LP
+
+// set params as const when have time
+
     Plotter(CustomPlotZoom*);
     ~Plotter();
 
@@ -21,7 +26,6 @@ public:
     void plot(vector<dataType>&, vector<dataType>&, int);
     void subsequentialPlot(Data&, int);
     void varBarPlot(Data&);
-    // LP O1 : declare the param you send in as const
     void varBoxPlot(Data&);
     void plot(Data&, int, int);
 

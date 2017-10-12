@@ -20,6 +20,11 @@ void Process::setWindow(int w){
     this->windowSize = w;
 }
 
+/**
+ * @brief Process::dataExtraction Extracts data from a container and links them to the helper struct.
+ * @param data Data container
+ * @return  QVector of DataLink helpers, each set contains a link to the single file and its corresponding filename, variance etc.
+ */
 QVector<DataLink> Process::dataExtraction(Data& data){
 
     QVector<DataLink> dataLinks;
@@ -33,6 +38,12 @@ QVector<DataLink> Process::dataExtraction(Data& data){
     return dataLinks;
 }
 
+/**
+ * @brief Process::doProcessMulti Triggers doProcessOne overridden methods of child classes, each in a separate thread.
+ * Crucial function that allows multi-threaded processing of files usign a QtConcurrent::map).
+ * It includes a QFutureWatcher to keep track of the progress and reports it back to the QProgressDialog.
+ * @param data Data container.
+ */
 void Process::doProcessMulti(Data& data){
 
     QVector<DataLink> dataLinks = dataExtraction(data);

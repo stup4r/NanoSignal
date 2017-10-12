@@ -7,6 +7,10 @@ class QRubberBand;
 class QMouseEvent;
 class QWidget;
 
+/**
+ * @brief The CustomPlotZoom class Subclass of the QCustomPlot to allow zooming in.
+ * The class overrides mouse event methods to allow interactive zooming with right mourse key.
+ */
 class CustomPlotZoom : public QCustomPlot
 {
     Q_OBJECT
@@ -23,9 +27,9 @@ private slots:
     void mouseReleaseEvent(QMouseEvent * event) override;
 
 private:
-    bool mZoomMode;
-    QRubberBand * mRubberBand;
-    QPoint mOrigin;
+    bool mZoomMode; // Zoom activation trigger
+    QRubberBand * mRubberBand; // Rectangule - zooming area visual aid
+    QPoint mOrigin; // Coordinates of the rectangule
 
 };
 

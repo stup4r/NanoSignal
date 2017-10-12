@@ -20,11 +20,12 @@ void Reader::setDownSamplingStep(int dss){
 }
 
 /**
- * Function called to open a (one only) file and import its data into a vector.
+ * \brief Function called to open a (one only) file and import its data into a vector.
+ * Dependin on whether the file contains commenting character "#", import is different. This is based on the fact that currently only prototype (single column files) or JPK (multiple column files with "#" comments) are used.
+ * Function looks for the keywords: "Vertical Deflection" and calculates the number of a column it shows up after the acquisition (can be different column).
  * @param name - string that coresponds to the filename of the file being imported (and its path).
  * @param mydata - reference to the vector where data will be stored.
  */
-
 void Reader::doProcessOne(DataLink& datalink){
 
     vector<dataType> tmp;

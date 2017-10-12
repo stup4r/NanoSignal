@@ -30,6 +30,10 @@ int Manipulation::getNewSampleFreq(){
     return (ui->lineEditNewSampleFreq->text()).toInt();
 }
 
+/**
+ * @brief Manipulation::setVecList Feeds the filenmas into the list box.
+ * @param fileNames Vector containing file names.
+ */
 void Manipulation::setVecList(std::vector<std::string> fileNames){
 
     for (unsigned int i = 0; i < fileNames.size(); ++i){
@@ -38,15 +42,23 @@ void Manipulation::setVecList(std::vector<std::string> fileNames){
     this->listNames = fileNames;
 }
 
+/**
+ * @brief Manipulation::getVecOrder Gets the new order of vectors, if changed.
+ * Function returns new indices for vector re-ordering.
+ * @return Vector of new indices that will be later used in Data class method reorderVec.
+ * @see Data::reorderVec
+ */
 std::vector<size_t> const Manipulation::getVecOrder(){
     std::vector<size_t> newIndices;
 
+    // Gets the new order of files
     std::vector<std::string> newOrder;
     for (int i = 0; i < ui->listFileNames->count(); ++i){
         QString s = ui->listFileNames->item(i)->text();
         newOrder.push_back(s.toStdString());
     }
 
+    // Finds the distance between the new ordered item and the one in the old order
     for (unsigned int i = 0; i < listNames.size(); ++i){
         std::vector<std::string>::iterator it = std::find(newOrder.begin(), newOrder.end(), listNames[i]);
         size_t pos = distance(newOrder.begin(), it);

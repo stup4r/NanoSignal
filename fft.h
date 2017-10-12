@@ -9,8 +9,11 @@ using namespace std;
 /**
  *  \brief FFT calculation function
  * Function FFT calculates Fourier Spectrum by taking only n = 2^m points.
- * Adapted from the book
- * @param dir
+ * Adapted from the book "Mathematical Tools in Signal Processing with C++ & Java Simulations" by Steeb.
+ * @param dir If 1 it gives the Fourier transform, if -1 it gives the inverse
+ * @param m power of the 2 for the maximum number of points
+ * @param x is the real part of the signal
+ * @param y is the imaginary part of the signal
  */
 
 template<typename T>
@@ -23,7 +26,7 @@ void FFT(int dir, unsigned long m, vector<T>& x, vector<T>& y){
     for(i=0; i<m; i++)
         n *= 2;
 
-    // bit reversal
+    // Bit reversal
     i2 = n >> 1;
     j=0;
     for (i=0; i<n-1; i++) {
@@ -43,7 +46,7 @@ void FFT(int dir, unsigned long m, vector<T>& x, vector<T>& y){
         j +=k;
     }
 
-    // compute FFT
+    // Compute the FFT
     c1 = -1.0;
     c2=0.0;
     l2 = 1;
@@ -79,6 +82,9 @@ void FFT(int dir, unsigned long m, vector<T>& x, vector<T>& y){
 
 }
 
+/**
+ * Calculates the number of points by n = 2^m
+ */
 template<typename T>
 T power(T m) {
     T r=1;

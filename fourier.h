@@ -4,6 +4,11 @@
 #include "process.h"
 #include "fft.h"
 
+/**
+ * @brief The Fourier class Class that allows FFT calculation of the signal.
+ * Class inherits from the Process class.
+ * doProcesOne is a mamber of the class Fourier and overrides the function from the mother class Process.
+ */
 class Fourier : public Process
 {
 public:

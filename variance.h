@@ -5,6 +5,9 @@
 #include "process.h"
 #include <cmath>
 
+/**
+ * @brief The Variance class Child class of Process that calculates and manipulates variance.
+ */
 class Variance : public Process
 {
 public:

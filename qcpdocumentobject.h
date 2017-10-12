@@ -33,6 +33,9 @@
 #include <QPainter>
 #include "qcustomplot.h"
 
+/**
+ * @brief The QCPDocumentObject class Notebook-related class.
+ */
 class QCPDocumentObject : public QObject, public QTextObjectInterface
 {
   Q_OBJECT

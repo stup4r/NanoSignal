@@ -9,6 +9,11 @@ namespace Ui {
 class Manipulation;
 }
 
+/**
+ * @brief The Manipulation class Manipulation window.
+ * Class contains necessary members and methods for function of a manipulation window.
+ * The window allows the change of sampling frequency, subsampling and file re-ordering.
+ */
 class Manipulation : public QDialog
 {
     Q_OBJECT
@@ -31,7 +36,7 @@ private slots:
 private:
     Ui::Manipulation *ui;
     std::vector<std::string> listNames;
-    bool orderChanged = false;
+    bool orderChanged = false; /**< Order change trigger */
 };
 
 #endif // MANIPULATION_H

@@ -5,6 +5,9 @@
 
 using namespace std;
 
+/**
+ * @brief The Reader class Child class of Process that imports files.
+ */
 class Reader : public Process
 {
 public:
@@ -16,8 +19,8 @@ public:
     void setDownSamplingStep(int);
 
 private:
-    bool isDownsampled = false;
-    int downSamplingStep = 200;
+    bool isDownsampled = false; /**< Downsampling trigger */
+    int downSamplingStep = 200; /**< Downsampled frequency */
 };
 
 #endif // READER_H
