@@ -1,5 +1,5 @@
 
-![Screenshot](nanoSignal.png)
+![Screenshot](nanoSignalLogo-02.png)
 
 # NanoSignal
 Signal processing toolbox.
