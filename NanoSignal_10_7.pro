@@ -69,4 +69,5 @@ DISTFILES +=
 
 RESOURCES += \
     icons.qrc \
-    files.qrc
+    files.qrc \
+    splash.qrc

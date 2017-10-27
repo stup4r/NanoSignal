@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>Splash/a1.png</file>
+        <file>Splash/a2.png</file>
+        <file>Splash/a3.png</file>
+        <file>Splash/a4.png</file>
+        <file>Splash/a5.png</file>
+        <file>Splash/a6.png</file>
+        <file>Splash/a7.png</file>
+        <file>Splash/a8.png</file>
+        <file>Splash/a9.png</file>
+        <file>Splash/a10.png</file>
+        <file>Splash/a11.png</file>
+        <file>Splash/a12.png</file>
+        <file>Splash/a13.png</file>
+        <file>Splash/a14.png</file>
+        <file>Splash/a15.png</file>
+    </qresource>
+</RCC>
