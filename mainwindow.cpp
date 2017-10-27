@@ -441,6 +441,6 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionManual_triggered()
 {
     // Should be changed to open a file from resources.
-    //QDesktopServices::openUrl(QUrl("file:///manualTest.pdf"));
+    QDesktopServices::openUrl(QUrl::fromLocalFile("://new/prefix1/Documentation/index.html"));
 }
 

@@ -30,7 +30,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -573,6 +573,9 @@
            </item>
            <item row="1" column="0">
             <widget class="QDoubleSpinBox" name="editCutoffVar">
+             <property name="decimals">
+              <number>5</number>
+             </property>
              <property name="maximum">
               <double>50000.000000000000000</double>
              </property>
