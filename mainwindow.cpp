@@ -424,7 +424,14 @@ void MainWindow::on_actionAbout_triggered()
     about_text = "NanoSignal: Signal analysis toolbox.\nAuthor: Petar Stupar\nCollective Copyright Holder\n";
     about_text += "Copyright (C) 2017\nLicensed under the GPLv3.\n";
 
-    QMessageBox::about(this, "About NanoSignal", about_text);
+    //QMessageBox::about(this, "About NanoSignal", about_text);
+    QMessageBox abouter;
+    abouter.setIconPixmap(QPixmap(":/new/prefix1/Splash/a15.png"));
+    abouter.setInformativeText(about_text);
+    abouter.setDefaultButton(QMessageBox::Ok);
+    abouter.show();
+    abouter.exec();
+
 }
 
 /**

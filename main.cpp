@@ -27,7 +27,7 @@ void designSplash(){
     }
     QSplashScreen *splashScreen = new QSplashScreen(QPixmap(":/new/prefix1/Splash/a15.png"));
     splashScreen->show();
-    QTime finishingTime = QTime::currentTime().addSecs(4);
+    QTime finishingTime = QTime::currentTime().addSecs(3);
     int count = 0;
     while(QTime::currentTime()<=finishingTime)
     {
