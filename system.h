@@ -44,6 +44,7 @@ public:
     void doPreview(int, int);
     void doBarPlot();
     void doBoxPlot();
+    void extractVar(QString);
 
     void checkInputValue(vector<vector<dataType> >&, int&);
 

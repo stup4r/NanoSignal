@@ -444,3 +444,12 @@ void MainWindow::on_actionManual_triggered()
     QDesktopServices::openUrl(QUrl::fromLocalFile("://new/prefix1/Documentation/index.html"));
 }
 
+
+void MainWindow::on_actionExtract_variance_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Write to CSV"),"/home/",tr("CSV Files (*.csv)"));
+    if (!fileName.endsWith(".csv")){
+        fileName += ".csv";
+    }
+    system->extractVar(fileName);
+}

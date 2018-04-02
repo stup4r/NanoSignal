@@ -311,3 +311,25 @@ void System::doPlot(int fileIndex, int pageIndex){
     plotter->plot(this->data, fileIndex, pageIndex);
 
 }
+
+void System::extractVar(QString s){
+//    std::string filename = s.toStdString();
+//    ofstream is (filename.c_str());
+//    if (is.is_open()){
+//        for (unsigned int i=0; i<this->data.varData.size(); ++i){
+//            copy(this->data.varData[i].begin(), this->data.varData[i].end(), ostream_iterator<dataType>(is, "\n"));
+//            is << "\n";
+//        }
+//        is.close();
+//    }
+    std::string filename = s.toStdString();
+    ofstream is (filename.c_str());
+    if (is.is_open()){
+        for (unsigned int i=0; i<this->data.varData.size(); ++i){
+            is << this->data.fileNames[i] << ",";
+            copy(this->data.varData[i].begin(), this->data.varData[i].end(), ostream_iterator<dataType>(is, ","));
+            is << "\n";
+        }
+        is.close();
+    }
+}

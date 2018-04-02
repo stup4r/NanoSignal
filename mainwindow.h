@@ -95,6 +95,8 @@ private slots:
 
     void on_actionManual_triggered();
 
+    void on_actionExtract_variance_triggered();
+
 private:
     Ui::MainWindow *ui; /**< Main Window ui */
     System *system; /**< Pointer to the data manager object */
