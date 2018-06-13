@@ -14,6 +14,10 @@
 #define READER_H
 
 #include "process.h"
+#include <iterator>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 

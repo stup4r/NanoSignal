@@ -323,7 +323,7 @@ void System::extractVar(QString s){
 //        is.close();
 //    }
     std::string filename = s.toStdString();
-    ofstream is (filename.c_str());
+    ofstream is(filename.c_str());
     if (is.is_open()){
         for (unsigned int i=0; i<this->data.varData.size(); ++i){
             is << this->data.fileNames[i] << ",";

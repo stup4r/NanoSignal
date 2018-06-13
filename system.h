@@ -21,6 +21,7 @@
 #include "variance.h"
 #include "plotter.h"
 
+
 /**
  * @brief The System class Data manager class used for do call most of the processing objects, plotters etc.
  */

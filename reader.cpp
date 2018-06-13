@@ -11,10 +11,6 @@
  ************************************************************************/
 
 #include "reader.h"
-#include <iterator>
-#include <algorithm>
-#include <fstream>
-#include <sstream>
 
 Reader::Reader()
 {
