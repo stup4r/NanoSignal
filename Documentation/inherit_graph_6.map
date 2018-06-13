@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_process.html" title="The Process class An abstract class used as a parent for other processing classes (Flattener..." alt="" coords="5,107,76,133"/>
+<area shape="rect" id="node2" href="$class_filter.html" title="Filter" alt="" coords="135,5,186,32"/>
+<area shape="rect" id="node3" href="$class_flattener.html" title="The Flattener class Class that allows flattening of the signal. Class inherits from the Process class..." alt="" coords="124,56,197,83"/>
+<area shape="rect" id="node4" href="$class_fourier.html" title="The Fourier class Class that allows FFT calculation of the signal. Class inherits from the Process cl..." alt="" coords="129,107,192,133"/>
+<area shape="rect" id="node5" href="$class_reader.html" title="The Reader class Child class of Process that imports files. " alt="" coords="129,157,193,184"/>
+<area shape="rect" id="node6" href="$class_variance.html" title="The Variance class Child class of Process that calculates and manipulates variance. " alt="" coords="124,208,197,235"/>
+</map>

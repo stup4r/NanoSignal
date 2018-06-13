@@ -1,0 +1,7 @@
+<map id="Process" name="Process">
+<area shape="rect" id="node2" href="$class_filter.html" title="Filter" alt="" coords="5,80,56,107"/>
+<area shape="rect" id="node3" href="$class_flattener.html" title="The Flattener class Class that allows flattening of the signal. Class inherits from the Process class..." alt="" coords="81,80,154,107"/>
+<area shape="rect" id="node4" href="$class_fourier.html" title="The Fourier class Class that allows FFT calculation of the signal. Class inherits from the Process cl..." alt="" coords="178,80,241,107"/>
+<area shape="rect" id="node5" href="$class_reader.html" title="The Reader class Child class of Process that imports files. " alt="" coords="265,80,329,107"/>
+<area shape="rect" id="node6" href="$class_variance.html" title="The Variance class Child class of Process that calculates and manipulates variance. " alt="" coords="354,80,427,107"/>
+</map>
