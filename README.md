@@ -24,7 +24,4 @@ Signal processing toolbox.
 ![Screenshot](Screenshots/2018-03-12-105058_921x853_scrot.png)
 ![Screenshot](Screenshots/2018-03-12-105549_1919x982_scrot.png)
 ![Screenshot](Screenshots/2018-03-12-110438_1722x861_scrot.png)
-![Screenshot](Screenshots/Screenshot from 2018-03-12 10_51_35COPY.png)
-
-
-
+![Screenshot](Screenshots/Screenshot_from_2018-03-12.png)
