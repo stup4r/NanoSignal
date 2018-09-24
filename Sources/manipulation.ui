@@ -112,7 +112,7 @@ Drag and drop individual files for a desired order.</string>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="layoutWidget1">
    <property name="geometry">
     <rect>
      <x>330</x>
