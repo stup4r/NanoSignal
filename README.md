@@ -2,7 +2,7 @@
 ![Screenshot](nanoSignalLogo3.png)
 
 # NanoSignal
-Signal processing toolbox.
+Signal processing toolbox written in C++
 
 ## Features:
 
