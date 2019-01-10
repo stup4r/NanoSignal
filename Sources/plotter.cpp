@@ -49,6 +49,7 @@ void Plotter::plotProcessPreview(vector<dataType>& v1, vector<dataType>& v2){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
     plotWidget->xAxis->setTickLabels(true);
+    plotWidget->xAxis->setTicks(false);
 
     QVector<double> x1(v1.size());
     iota(x1.begin(), x1.end(), 0);
@@ -130,6 +131,7 @@ void Plotter::plot(vector<dataType>& vecX, vector<dataType>& vecY, int s){
 void Plotter::subsequentialPlot(Data& data, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
+    plotWidget->xAxis->setTicks(false);
     plotWidget->xAxis->setTickLabels(true);
     switch (s) {
     case 0:
@@ -138,15 +140,20 @@ void Plotter::subsequentialPlot(Data& data, int s){
     case 2:
         break;
     case 3:{
+        vector<QColor> cols = this->clrs;
+        auto varSize = data.varData.size();
+        while(varSize > cols.size()){
+            auto old_count = cols.size();
+            cols.resize(2 * old_count);
+            std::copy_n(cols.begin(), old_count, cols.begin() + old_count);
+        }
         QPen pen;
         pen.setWidth(2);
-        int step=2;
         int len = 0;
         for (unsigned int i=0; i<data.varData.size(); ++i){
             plotWidget->addGraph();
             plotWidget->graph()->setName(QString::fromStdString(finePrintName(data.fileNames[i])));
-            pen.setColor(QColor(qSin(step*0.3)*100+100, qSin(step*0.6+0.7)*100+100, qSin(step*0.4+0.6)*100+100));
-            step = step * step;
+            pen.setColor(cols[i]);
             vector<dataType> Xvec(data.varData[i].size());
             iota(Xvec.begin(), Xvec.end(), len);
             len += data.varData[i].size();
@@ -181,13 +188,22 @@ void Plotter::subsequentialPlot(Data& data, int s){
  * @param data Data container to extract variance means.
  */
 void Plotter::varBarPlot(Data& data){
-    plotWidget->xAxis->setTickLabels(true);
+
+    plotWidget->xAxis->setTicks(false);
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
-    int step=2;
+    plotWidget->xAxis->setTickLabels(true);
     int len=1;
 
     for (unsigned int i = 0; i < (data.varMeans.size())/2; ++i){
+
+        vector<QColor> cols = this->clrs;
+        auto varSize = data.varData.size();
+        while(varSize > cols.size()){
+            auto old_count = cols.size();
+            cols.resize(2 * old_count);
+            std::copy_n(cols.begin(), old_count, cols.begin() + old_count);
+        }
 
         QCPBars *bars = new QCPBars(plotWidget->xAxis, plotWidget->yAxis);
         QCPErrorBars *errorBars = new QCPErrorBars(plotWidget->xAxis, plotWidget->yAxis);
@@ -207,8 +223,7 @@ void Plotter::varBarPlot(Data& data){
         bars->setData(QvecX, QvecY);
         bars->setName(QString::fromStdString(finePrintName(data.fileNames[i])));
         bars->setPen(Qt::NoPen);
-        bars->setBrush(QColor(qSin(step*0.3)*100+100, qSin(step*0.6+0.7)*100+100, qSin(step*0.4+0.6)*100+100));
-        step = step * step;
+        bars->setBrush(cols[i]);
         errorBars->setDataPlottable(bars);
         QVector<double> QerrVec = QVector<double>::fromStdVector(data.varMeans[2*i+1]);
         errorBars->setData(QerrVec);
@@ -228,6 +243,7 @@ void Plotter::varBoxPlot(Data& data){
 
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
+    plotWidget->xAxis->setTicks(true);
 
     QCPStatisticalBox *statistical = new QCPStatisticalBox(plotWidget->xAxis, plotWidget->yAxis);
     QBrush boxBrush(QColor(60, 60, 255, 100));
@@ -264,6 +280,7 @@ void Plotter::plot(Data& data, int fileIndex, int s){
     plotWidget->clearGraphs();
     plotWidget->clearPlottables();
     plotWidget->xAxis->setTickLabels(true);
+    plotWidget->xAxis->setTicks(false);
 
     plotWidget->addGraph();
     plotWidget->graph(0)->setPen(QPen(Qt::blue));

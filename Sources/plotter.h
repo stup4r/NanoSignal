@@ -47,6 +47,7 @@ private:
     CustomPlotZoom* plotWidget;
     dataType minRange = 0;
     dataType maxRange = 1;
+    vector<QColor> clrs = {QColor(31,120,180), QColor(106,61,154), QColor(51,160,44), QColor(227,26,28), QColor(178,223,138), QColor(251,154,153), QColor(253,191,111), QColor(255,127,0), QColor(202,178,214)};
 };
 
 #endif // PLOTTER_H
