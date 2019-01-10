@@ -954,7 +954,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 923, 22));
+        menuBar->setGeometry(QRect(0, 0, 923, 19));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuTools = new QMenu(menuBar);
@@ -1014,7 +1014,7 @@ public:
         QObject::connect(actionNotebook, SIGNAL(triggered()), notebookButton, SLOT(click()));
         QObject::connect(actionPlot_Settings, SIGNAL(triggered()), plotstngsButton, SLOT(click()));
 
-        processBox->setCurrentIndex(3);
+        processBox->setCurrentIndex(0);
         unitsFlatWin->setCurrentIndex(0);
 
 
